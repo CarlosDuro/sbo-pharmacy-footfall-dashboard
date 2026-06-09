@@ -1,22 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Pharmacy Operations Intelligence Center</title>
+<title>Centro de Inteligencia Operativa para Farmacias</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
+*{box-sizing:border-box}
+
 body{
   margin:0;
   font-family:Arial, sans-serif;
   background:#0b1220;
   color:white;
+  overflow-x:hidden;
+  overflow-y:auto;
 }
 
 .dashboard{
+  width:100%;
   padding:18px;
-  min-width:1300px;
 }
 
 .header{
@@ -47,7 +51,7 @@ body{
 
 .kpis{
   display:grid;
-  grid-template-columns:repeat(8,1fr);
+  grid-template-columns:repeat(4,1fr);
   gap:12px;
   margin-bottom:12px;
 }
@@ -66,7 +70,7 @@ body{
 }
 
 .kpi-value{
-  font-size:24px;
+  font-size:26px;
   font-weight:800;
   margin-top:8px;
 }
@@ -79,14 +83,14 @@ body{
 
 .grid{
   display:grid;
-  grid-template-columns:2fr 1.1fr 1.1fr;
+  grid-template-columns:2fr 1fr;
   gap:12px;
   margin-bottom:12px;
 }
 
-.grid2{
+.grid3{
   display:grid;
-  grid-template-columns:1.3fr 1.3fr 1fr;
+  grid-template-columns:1fr 1fr 1fr;
   gap:12px;
   margin-bottom:12px;
 }
@@ -126,7 +130,7 @@ th{
 .blue{background:#1d4ed8;}
 
 .feed{
-  height:210px;
+  height:220px;
   overflow:hidden;
 }
 
@@ -202,59 +206,88 @@ th{
 
   <div class="header">
     <div>
-      <div class="title">💊 Pharmacy Operations Intelligence Center</div>
-      <div class="subtitle">Real-time footfall, occupancy, queue, transaction and store performance intelligence</div>
+      <div class="title">Centro de Inteligencia Operativa para Farmacias</div>
+      <div class="subtitle">Monitoreo en tiempo real de afluencia, ocupación, transacciones y desempeño operativo.</div>
     </div>
     <div>
       <span class="small" id="updated"></span>
-      <span class="live">● LIVE</span>
+      <span class="live">● EN VIVO</span>
     </div>
   </div>
 
   <div class="kpis">
-    <div class="card"><div class="kpi-title">Current Occupancy</div><div class="kpi-value" id="occupancy">127</div><div class="kpi-trend">Live in-store count</div></div>
-    <div class="card"><div class="kpi-title">Entries Today</div><div class="kpi-value" id="entries">8,421</div><div class="kpi-trend">↑ 7.4% vs yesterday</div></div>
-    <div class="card"><div class="kpi-title">Exits Today</div><div class="kpi-value" id="exits">8,294</div><div class="kpi-trend">Balanced flow</div></div>
-    <div class="card"><div class="kpi-title">Avg. Dwell Time</div><div class="kpi-value" id="dwell">11.2m</div><div class="kpi-trend">↑ 1.1m vs avg.</div></div>
-    <div class="card"><div class="kpi-title">Queue Length</div><div class="kpi-value" id="queue">6</div><div class="kpi-trend">Checkout area</div></div>
-    <div class="card"><div class="kpi-title">Prescription Transactions</div><div class="kpi-value" id="rx">3,184</div><div class="kpi-trend">↑ 5.2%</div></div>
-    <div class="card"><div class="kpi-title">OTC Transactions</div><div class="kpi-value" id="otc">5,720</div><div class="kpi-trend">↑ 8.8%</div></div>
-    <div class="card"><div class="kpi-title">Conversion Rate</div><div class="kpi-value" id="conversion">72.8%</div><div class="kpi-trend">Footfall to transaction</div></div>
+    <div class="card">
+      <div class="kpi-title">Clientes en Tienda</div>
+      <div class="kpi-value" id="occupancy">127</div>
+      <div class="kpi-trend" id="occupancyTrend">↑ +18 últimos 15 min</div>
+    </div>
+
+    <div class="card">
+      <div class="kpi-title">Entradas Hoy</div>
+      <div class="kpi-value" id="entries">8,421</div>
+      <div class="kpi-trend">↑ 7.4% vs ayer</div>
+    </div>
+
+    <div class="card">
+      <div class="kpi-title">Salidas Hoy</div>
+      <div class="kpi-value" id="exits">8,294</div>
+      <div class="kpi-trend">Flujo balanceado</div>
+    </div>
+
+    <div class="card">
+      <div class="kpi-title">Tiempo Promedio de Permanencia</div>
+      <div class="kpi-value" id="dwell">11.2m</div>
+      <div class="kpi-trend">↑ 1.1m vs promedio</div>
+    </div>
+
+    <div class="card">
+      <div class="kpi-title">Longitud de Fila</div>
+      <div class="kpi-value" id="queue">6</div>
+      <div class="kpi-trend">Área de cajas</div>
+    </div>
+
+    <div class="card">
+      <div class="kpi-title">Transacciones de Receta</div>
+      <div class="kpi-value" id="rx">3,184</div>
+      <div class="kpi-trend">↑ 5.2%</div>
+    </div>
+
+    <div class="card">
+      <div class="kpi-title">Transacciones OTC</div>
+      <div class="kpi-value" id="otc">5,720</div>
+      <div class="kpi-trend">↑ 8.8%</div>
+    </div>
+
+    <div class="card">
+      <div class="kpi-title">Tasa de Conversión</div>
+      <div class="kpi-value" id="conversion">72.8%</div>
+      <div class="kpi-trend">Afluencia vs transacciones</div>
+    </div>
   </div>
 
   <div class="grid">
     <div class="card">
-      <div class="section-title">Footfall Trend - Entries vs Exits</div>
+      <div class="section-title">Tendencia de Afluencia - Entradas vs Salidas</div>
       <canvas id="flowChart" height="120"></canvas>
     </div>
 
     <div class="card">
-      <div class="section-title">Occupancy by Store Zone</div>
+      <div class="section-title">Ocupación por Zona</div>
       <canvas id="zoneChart" height="120"></canvas>
-    </div>
-
-    <div class="card">
-      <div class="section-title">Transaction Mix</div>
-      <canvas id="mixChart" height="120"></canvas>
     </div>
   </div>
 
-  <div class="grid2">
+  <div class="grid3">
     <div class="card">
-      <div class="section-title">Top Stores by Footfall</div>
-      <table>
-        <thead>
-          <tr><th>Store</th><th>Occupancy</th><th>Transactions</th><th>Status</th></tr>
-        </thead>
-        <tbody id="storeTable"></tbody>
-      </table>
+      <div class="section-title">Distribución de Transacciones</div>
+      <canvas id="mixChart" height="145"></canvas>
     </div>
 
     <div class="card">
-      <div class="section-title">National Store Activity Map</div>
+      <div class="section-title">Mapa Nacional de Actividad</div>
       <div class="map">
-        <div class="dot" id="dot1" style="left:46%;top:48%;color:#22c55e;background:#22c55e;"></div>
-        <div class="city" style="left:48%;top:55%;">Mexico City</div>
+        <div class="dot" style="left:46%;top:48%;color:#22c55e;background:#22c55e;"></div>
+        <div class="city" style="left:48%;top:55%;">CDMX</div>
 
         <div class="dot" style="left:38%;top:32%;color:#facc15;background:#facc15;"></div>
         <div class="city" style="left:31%;top:27%;">Monterrey</div>
@@ -266,49 +299,48 @@ th{
         <div class="city" style="left:56%;top:66%;">Puebla</div>
 
         <div class="dot" style="left:73%;top:45%;color:#facc15;background:#facc15;"></div>
-        <div class="city" style="left:75%;top:51%;">Cancun</div>
+        <div class="city" style="left:75%;top:51%;">Cancún</div>
       </div>
     </div>
 
     <div class="card">
-      <div class="section-title">Real-Time Customer Flow Intelligence</div>
+      <div class="section-title">Inteligencia de Flujo de Clientes</div>
       <div class="summary">
-        <div class="metric"><div class="metric-label">People Last Hour</div><div class="metric-value" id="lastHour">2,814</div></div>
-        <div class="metric"><div class="metric-label">Peak Store</div><div class="metric-value" id="peakStore">CDMX 102</div></div>
-        <div class="metric"><div class="metric-label">Peak Zone</div><div class="metric-value" id="peakZone">Counter</div></div>
-        <div class="metric"><div class="metric-label">System Availability</div><div class="metric-value">99.98%</div></div>
+        <div class="metric"><div class="metric-label">Clientes Última Hora</div><div class="metric-value" id="lastHour">2,814</div></div>
+        <div class="metric"><div class="metric-label">Sucursal con Mayor Actividad</div><div class="metric-value" id="peakStore">CDMX 102</div></div>
+        <div class="metric"><div class="metric-label">Zona con Mayor Actividad</div><div class="metric-value" id="peakZone">Mostrador</div></div>
+        <div class="metric"><div class="metric-label">Disponibilidad del Sistema</div><div class="metric-value">99.98%</div></div>
       </div>
     </div>
   </div>
 
-  <div class="grid2">
+  <div class="grid3">
     <div class="card">
-      <div class="section-title">Store Health</div>
+      <div class="section-title">Sucursales con Mayor Actividad</div>
       <table>
-        <tbody>
-          <tr><td>Online Stores</td><td id="onlineStores">432</td></tr>
-          <tr><td>Stores Reporting</td><td>432</td></tr>
-          <tr><td>Active Cameras</td><td id="cameras">2,814</td></tr>
-          <tr><td>AI Analytics Running</td><td id="analytics">1,224</td></tr>
-          <tr><td>Connected Sensors</td><td id="sensors">4,981</td></tr>
-        </tbody>
+        <thead>
+          <tr><th>Sucursal</th><th>Ocupación</th><th>Transacciones</th><th>Estado</th></tr>
+        </thead>
+        <tbody id="storeTable"></tbody>
       </table>
     </div>
 
     <div class="card">
-      <div class="section-title">Live Operational Alerts</div>
+      <div class="section-title">Alertas Operativas en Tiempo Real</div>
       <div class="feed" id="feed"></div>
     </div>
 
     <div class="card">
-      <div class="section-title">Operational Summary</div>
+      <div class="section-title">Resumen Operativo</div>
       <table>
         <tbody>
-          <tr><td>Checkout Queue Level</td><td><span class="badge orange" id="queueBadge">Medium</span></td></tr>
-          <tr><td>Occupancy Level</td><td><span class="badge green" id="occBadge">Normal</span></td></tr>
-          <tr><td>Prescription Demand</td><td><span class="badge blue">High</span></td></tr>
-          <tr><td>Customer Experience</td><td><span class="badge green">Healthy</span></td></tr>
-          <tr><td>Recommended Action</td><td id="action">Monitor checkout flow</td></tr>
+          <tr><td>Nivel de Fila en Cajas</td><td><span class="badge orange" id="queueBadge">Medio</span></td></tr>
+          <tr><td>Nivel de Ocupación</td><td><span class="badge green" id="occBadge">Normal</span></td></tr>
+          <tr><td>Demanda de Recetas</td><td><span class="badge blue">Alta</span></td></tr>
+          <tr><td>Experiencia del Cliente</td><td><span class="badge green">Saludable</span></td></tr>
+          <tr><td>Acción Recomendada</td><td id="action">Monitorear flujo en cajas</td></tr>
+          <tr><td>Cámaras Activas</td><td id="cameras">2,814</td></tr>
+          <tr><td>Analíticos IA Activos</td><td id="analytics">1,224</td></tr>
         </tbody>
       </table>
     </div>
@@ -317,9 +349,9 @@ th{
 </div>
 
 <script>
-let occupancy = 127;
 let entries = 8421;
 let exits = 8294;
+let occupancy = entries - exits;
 let rx = 3184;
 let otc = 5720;
 
@@ -327,13 +359,13 @@ function fmt(n){return Math.round(n).toLocaleString("en-US");}
 function rand(min,max){return Math.random()*(max-min)+min;}
 
 function updateHeader(){
-  document.getElementById("updated").innerText = "Last Updated: " + new Date().toLocaleTimeString() + "  ";
+  document.getElementById("updated").innerText = "Última actualización: " + new Date().toLocaleTimeString() + "  ";
 }
 
 function updateKPIs(){
   entries += Math.floor(rand(5,25));
   exits += Math.floor(rand(4,23));
-  occupancy = Math.max(70, entries - exits + Math.floor(rand(-8,8)));
+  occupancy = Math.max(30, entries - exits + Math.floor(rand(-8,8)));
   rx += Math.floor(rand(2,9));
   otc += Math.floor(rand(4,16));
 
@@ -351,18 +383,28 @@ function updateKPIs(){
   document.getElementById("lastHour").innerText = fmt(rand(2400,3300));
   document.getElementById("cameras").innerText = fmt(rand(2780,2850));
   document.getElementById("analytics").innerText = fmt(rand(1210,1250));
-  document.getElementById("sensors").innerText = fmt(rand(4960,5030));
+
+  const delta = Math.floor(rand(-12,25));
+  const occTrend = document.getElementById("occupancyTrend");
+
+  if(delta >= 0){
+    occTrend.innerText = "↑ +" + delta + " últimos 15 min";
+    occTrend.style.color = "#22c55e";
+  }else{
+    occTrend.innerText = "↓ " + delta + " últimos 15 min";
+    occTrend.style.color = "#ef4444";
+  }
 
   const occBadge = document.getElementById("occBadge");
-  if(occupancy > 170){occBadge.innerText="High";occBadge.className="badge red";}
-  else if(occupancy > 135){occBadge.innerText="Elevated";occBadge.className="badge orange";}
+  if(occupancy > 170){occBadge.innerText="Alta";occBadge.className="badge red";}
+  else if(occupancy > 135){occBadge.innerText="Elevada";occBadge.className="badge orange";}
   else{occBadge.innerText="Normal";occBadge.className="badge green";}
 
   const qBadge = document.getElementById("queueBadge");
   const q = Number(document.getElementById("queue").innerText);
-  if(q > 10){qBadge.innerText="High";qBadge.className="badge red";document.getElementById("action").innerText="Open additional checkout";}
-  else if(q > 6){qBadge.innerText="Medium";qBadge.className="badge orange";document.getElementById("action").innerText="Monitor checkout flow";}
-  else{qBadge.innerText="Low";qBadge.className="badge green";document.getElementById("action").innerText="Normal operation";}
+  if(q > 10){qBadge.innerText="Alta";qBadge.className="badge red";document.getElementById("action").innerText="Abrir caja adicional";}
+  else if(q > 6){qBadge.innerText="Media";qBadge.className="badge orange";document.getElementById("action").innerText="Monitorear flujo en cajas";}
+  else{qBadge.innerText="Baja";qBadge.className="badge green";document.getElementById("action").innerText="Operación normal";}
 }
 
 const flowChart = new Chart(document.getElementById("flowChart"),{
@@ -370,8 +412,8 @@ const flowChart = new Chart(document.getElementById("flowChart"),{
   data:{
     labels:["08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00"],
     datasets:[
-      {label:"Entries",data:[410,620,890,1120,1260,1410,1530,1680],borderWidth:3,tension:.35},
-      {label:"Exits",data:[320,480,710,970,1190,1320,1450,1590],borderWidth:3,tension:.35}
+      {label:"Entradas",data:[410,620,890,1120,1260,1410,1530,1680],borderWidth:3,tension:.35},
+      {label:"Salidas",data:[320,480,710,970,1190,1320,1450,1590],borderWidth:3,tension:.35}
     ]
   },
   options:{plugins:{legend:{labels:{color:"#cbd5e1"}}},scales:{x:{ticks:{color:"#9ca3af"},grid:{color:"#253247"}},y:{ticks:{color:"#9ca3af"},grid:{color:"#253247"}}}}
@@ -379,13 +421,13 @@ const flowChart = new Chart(document.getElementById("flowChart"),{
 
 const zoneChart = new Chart(document.getElementById("zoneChart"),{
   type:"doughnut",
-  data:{labels:["Counter","OTC","Personal Care","Checkout","Waiting"],datasets:[{data:[29,24,16,18,13],borderWidth:0}]},
+  data:{labels:["Mostrador","OTC","Cuidado Personal","Cajas","Espera"],datasets:[{data:[29,24,16,18,13],borderWidth:0}]},
   options:{plugins:{legend:{labels:{color:"#cbd5e1"}}}}
 });
 
 const mixChart = new Chart(document.getElementById("mixChart"),{
   type:"bar",
-  data:{labels:["Rx","OTC","Personal Care","Other"],datasets:[{label:"Transactions",data:[3184,5720,1910,860],borderWidth:1}]},
+  data:{labels:["Recetas","OTC","Cuidado Personal","Otros"],datasets:[{label:"Transacciones",data:[3184,5720,1910,860],borderWidth:1}]},
   options:{plugins:{legend:{labels:{color:"#cbd5e1"}}},scales:{x:{ticks:{color:"#9ca3af"},grid:{color:"#253247"}},y:{ticks:{color:"#9ca3af"},grid:{color:"#253247"}}}}
 });
 
@@ -407,34 +449,34 @@ function updateCharts(){
 }
 
 function updateStoreTable(){
-  const stores = ["CDMX 102","Monterrey 045","Guadalajara 011","Puebla 008","Cancun 027","Merida 019"];
+  const stores = ["CDMX 102","Monterrey 045","Guadalajara 011","Puebla 008","Cancún 027","Mérida 019"];
   const tbody = document.getElementById("storeTable");
   tbody.innerHTML = "";
 
-  stores.forEach((s,i)=>{
+  stores.forEach((s)=>{
     const occ = Math.floor(rand(75,190));
     const tx = Math.floor(rand(420,980));
     let status = "Normal", badge = "green";
-    if(occ > 150){status="High";badge="red";}
-    else if(occ > 125){status="Elevated";badge="orange";}
+    if(occ > 150){status="Alta";badge="red";}
+    else if(occ > 125){status="Elevada";badge="orange";}
     tbody.innerHTML += `<tr><td>${s}</td><td>${occ}</td><td>${tx}</td><td><span class="badge ${badge}">${status}</span></td></tr>`;
   });
 
   document.getElementById("peakStore").innerText = stores[Math.floor(rand(0,stores.length))];
-  document.getElementById("peakZone").innerText = ["Counter","OTC Area","Checkout","Waiting Area","Personal Care"][Math.floor(rand(0,5))];
+  document.getElementById("peakZone").innerText = ["Mostrador","Área OTC","Cajas","Sala de Espera","Cuidado Personal"][Math.floor(rand(0,5))];
 }
 
 const events = [
-  "Entry count increased at CDMX 102",
-  "Exit flow normalized at Monterrey 045",
-  "Occupancy threshold reached at Guadalajara 011",
-  "Checkout queue increasing at Puebla 008",
-  "Prescription counter demand spike detected",
-  "OTC area customer flow increased",
-  "Additional cashier recommended",
-  "Waiting area occupancy updated",
-  "Camera analytics synchronized",
-  "Store traffic pattern refreshed"
+  "Incremento de entradas detectado en CDMX 102",
+  "Flujo de salidas normalizado en Monterrey 045",
+  "Nivel de ocupación elevado en Guadalajara 011",
+  "Fila de cajas superior al umbral en Puebla 008",
+  "Incremento en demanda de recetas detectado",
+  "Mayor afluencia en área OTC",
+  "Se recomienda abrir caja adicional",
+  "Ocupación en sala de espera actualizada",
+  "Analíticos de cámara sincronizados",
+  "Patrón de tráfico de clientes actualizado"
 ];
 
 function addEvent(){
