@@ -207,7 +207,7 @@ th{
   <div class="header">
     <div>
       <div class="title">Centro de Inteligencia Operativa para Farmacias</div>
-      <div class="subtitle">Monitoreo en tiempo real de afluencia, ocupación, transacciones y desempeño operativo.</div>
+      <div class="subtitle">Monitoreo en tiempo real de afluencia, ocupación, analíticos de video y desempeño operativo.</div>
     </div>
     <div>
       <span class="small" id="updated"></span>
@@ -235,6 +235,18 @@ th{
     </div>
 
     <div class="card">
+      <div class="kpi-title">Personas Detectadas Hoy</div>
+      <div class="kpi-value" id="peopleDetected">24,812</div>
+      <div class="kpi-trend">Analíticos de video</div>
+    </div>
+
+    <div class="card">
+      <div class="kpi-title">Vehículos Detectados</div>
+      <div class="kpi-value" id="vehiclesDetected">3,428</div>
+      <div class="kpi-trend">Accesos a estacionamiento</div>
+    </div>
+
+    <div class="card">
       <div class="kpi-title">Tiempo Promedio de Permanencia</div>
       <div class="kpi-value" id="dwell">11.2m</div>
       <div class="kpi-trend">↑ 1.1m vs promedio</div>
@@ -247,21 +259,9 @@ th{
     </div>
 
     <div class="card">
-      <div class="kpi-title">Transacciones de Receta</div>
-      <div class="kpi-value" id="rx">3,184</div>
-      <div class="kpi-trend">↑ 5.2%</div>
-    </div>
-
-    <div class="card">
-      <div class="kpi-title">Transacciones OTC</div>
-      <div class="kpi-value" id="otc">5,720</div>
-      <div class="kpi-trend">↑ 8.8%</div>
-    </div>
-
-    <div class="card">
-      <div class="kpi-title">Tasa de Conversión</div>
-      <div class="kpi-value" id="conversion">72.8%</div>
-      <div class="kpi-trend">Afluencia vs transacciones</div>
+      <div class="kpi-title">Tasa de Conversión Estimada</div>
+      <div class="kpi-value" id="conversion">33.9%</div>
+      <div class="kpi-trend">Entradas vs personas detectadas</div>
     </div>
   </div>
 
@@ -279,8 +279,8 @@ th{
 
   <div class="grid3">
     <div class="card">
-      <div class="section-title">Distribución de Transacciones</div>
-      <canvas id="mixChart" height="145"></canvas>
+      <div class="section-title">Distribución de Personas por Zona</div>
+      <canvas id="zoneDistributionChart" height="145"></canvas>
     </div>
 
     <div class="card">
@@ -319,7 +319,7 @@ th{
       <div class="section-title">Sucursales con Mayor Actividad</div>
       <table>
         <thead>
-          <tr><th>Sucursal</th><th>Ocupación</th><th>Transacciones</th><th>Estado</th></tr>
+          <tr><th>Sucursal</th><th>Ocupación</th><th>Personas Detectadas</th><th>Estado</th></tr>
         </thead>
         <tbody id="storeTable"></tbody>
       </table>
@@ -336,7 +336,7 @@ th{
         <tbody>
           <tr><td>Nivel de Fila en Cajas</td><td><span class="badge orange" id="queueBadge">Medio</span></td></tr>
           <tr><td>Nivel de Ocupación</td><td><span class="badge green" id="occBadge">Normal</span></td></tr>
-          <tr><td>Demanda de Recetas</td><td><span class="badge blue">Alta</span></td></tr>
+          <tr><td>Demanda en Mostrador</td><td><span class="badge blue">Alta</span></td></tr>
           <tr><td>Experiencia del Cliente</td><td><span class="badge green">Saludable</span></td></tr>
           <tr><td>Acción Recomendada</td><td id="action">Monitorear flujo en cajas</td></tr>
           <tr><td>Cámaras Activas</td><td id="cameras">2,814</td></tr>
@@ -352,8 +352,8 @@ th{
 let entries = 8421;
 let exits = 8294;
 let occupancy = entries - exits;
-let rx = 3184;
-let otc = 5720;
+let peopleDetected = 24812;
+let vehiclesDetected = 3428;
 
 function fmt(n){return Math.round(n).toLocaleString("en-US");}
 function rand(min,max){return Math.random()*(max-min)+min;}
@@ -365,18 +365,18 @@ function updateHeader(){
 function updateKPIs(){
   entries += Math.floor(rand(5,25));
   exits += Math.floor(rand(4,23));
-  occupancy = Math.max(30, entries - exits + Math.floor(rand(-8,8)));
-  rx += Math.floor(rand(2,9));
-  otc += Math.floor(rand(4,16));
+  peopleDetected += Math.floor(rand(15,45));
+  vehiclesDetected += Math.floor(rand(2,12));
 
-  const totalTx = rx + otc;
-  const conversion = ((totalTx / entries) * 100).toFixed(1);
+  occupancy = Math.max(30, entries - exits + Math.floor(rand(-8,8)));
+
+  const conversion = ((entries / peopleDetected) * 100).toFixed(1);
 
   document.getElementById("occupancy").innerText = fmt(occupancy);
   document.getElementById("entries").innerText = fmt(entries);
   document.getElementById("exits").innerText = fmt(exits);
-  document.getElementById("rx").innerText = fmt(rx);
-  document.getElementById("otc").innerText = fmt(otc);
+  document.getElementById("peopleDetected").innerText = fmt(peopleDetected);
+  document.getElementById("vehiclesDetected").innerText = fmt(vehiclesDetected);
   document.getElementById("conversion").innerText = conversion + "%";
   document.getElementById("queue").innerText = Math.floor(rand(3,14));
   document.getElementById("dwell").innerText = rand(9.4,14.8).toFixed(1) + "m";
@@ -425,14 +425,18 @@ const zoneChart = new Chart(document.getElementById("zoneChart"),{
   options:{plugins:{legend:{labels:{color:"#cbd5e1"}}}}
 });
 
-const mixChart = new Chart(document.getElementById("mixChart"),{
+const zoneDistributionChart = new Chart(document.getElementById("zoneDistributionChart"),{
   type:"bar",
-  data:{labels:["Recetas","OTC","Cuidado Personal","Otros"],datasets:[{label:"Transacciones",data:[3184,5720,1910,860],borderWidth:1}]},
+  data:{
+    labels:["Mostrador","Área OTC","Cuidado Personal","Cajas","Sala de Espera"],
+    datasets:[{label:"Personas Detectadas",data:[420,315,218,164,96],borderWidth:1}]
+  },
   options:{plugins:{legend:{labels:{color:"#cbd5e1"}}},scales:{x:{ticks:{color:"#9ca3af"},grid:{color:"#253247"}},y:{ticks:{color:"#9ca3af"},grid:{color:"#253247"}}}}
 });
 
 function updateCharts(){
   const label = new Date().toLocaleTimeString().slice(0,5);
+
   flowChart.data.labels.push(label);
   flowChart.data.labels.shift();
   flowChart.data.datasets[0].data.push(rand(1450,1850));
@@ -444,8 +448,14 @@ function updateCharts(){
   zoneChart.data.datasets[0].data = [rand(24,34),rand(20,29),rand(12,20),rand(15,24),rand(8,16)];
   zoneChart.update();
 
-  mixChart.data.datasets[0].data = [rx,otc,rand(1800,2300),rand(760,1200)];
-  mixChart.update();
+  zoneDistributionChart.data.datasets[0].data = [
+    rand(380,520),
+    rand(260,380),
+    rand(180,280),
+    rand(120,240),
+    rand(70,150)
+  ];
+  zoneDistributionChart.update();
 }
 
 function updateStoreTable(){
@@ -455,11 +465,11 @@ function updateStoreTable(){
 
   stores.forEach((s)=>{
     const occ = Math.floor(rand(75,190));
-    const tx = Math.floor(rand(420,980));
+    const detected = Math.floor(rand(1200,4200));
     let status = "Normal", badge = "green";
     if(occ > 150){status="Alta";badge="red";}
     else if(occ > 125){status="Elevada";badge="orange";}
-    tbody.innerHTML += `<tr><td>${s}</td><td>${occ}</td><td>${tx}</td><td><span class="badge ${badge}">${status}</span></td></tr>`;
+    tbody.innerHTML += `<tr><td>${s}</td><td>${occ}</td><td>${fmt(detected)}</td><td><span class="badge ${badge}">${status}</span></td></tr>`;
   });
 
   document.getElementById("peakStore").innerText = stores[Math.floor(rand(0,stores.length))];
@@ -471,11 +481,12 @@ const events = [
   "Flujo de salidas normalizado en Monterrey 045",
   "Nivel de ocupación elevado en Guadalajara 011",
   "Fila de cajas superior al umbral en Puebla 008",
-  "Incremento en demanda de recetas detectado",
+  "Incremento de personas detectadas en mostrador",
   "Mayor afluencia en área OTC",
   "Se recomienda abrir caja adicional",
   "Ocupación en sala de espera actualizada",
   "Analíticos de cámara sincronizados",
+  "Vehículos detectados en estacionamiento norte",
   "Patrón de tráfico de clientes actualizado"
 ];
 
